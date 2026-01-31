@@ -5,11 +5,11 @@
 </p>
 
 <p align="center">
-  <strong>Minecraft 服务器官方网站</strong>
+  <strong>Mcoo 墨客小筑 官方网站</strong>
 </p>
 
 <p align="center">
-  <a href="https://mcoo.top">🌐 访问官网</a>
+  <a href="https://www.mcoo.top">🌐 访问官网</a>
   ·
   <a href="https://github.com/GeminiAlpha-1/McooServers">🐙 GitHub</a>
 </p>
@@ -20,7 +20,7 @@
 
 Mcoo 墨客小筑是一个基于 **Minecraft Java版** 的原版生存服务器，采用 Fabric 1.21 驱动。
 
-我们的理念是保持纯净的游戏体验，仅使用不改变原版机制的优化模组，让每一位玩家都能享受最原汁原味的 Minecraft 乐趣。
+我们的理念是保持《纯净》的游戏体验，仅使用不改变原版机制的优化模组，让每一位玩家都能享受最原汁原味的 Minecraft 乐趣。
 
 ### 服务器特色
 
@@ -167,6 +167,8 @@ Mcoo 服务器拥有丰富的徽章系统，记录着玩家们的荣耀时刻。
 - 💿 **银河唱片机** - 参与服务器唱片全收集计划
 - 🌌 **云天明的小宇宙** - 参与青铜尊号中继站建设
 - 🎃 **奇怪的南瓜派** - 万圣夜活动
+
+更多徽章正在持续更新中~
 
 ---
 

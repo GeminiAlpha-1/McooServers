@@ -10,6 +10,13 @@ export const teekConfig = defineTeekConfig({
     hideBanner: true
   },
   footerInfo: {
+    theme: {
+      name: `Theme By Teek@${version}`,
+    },
+    copyright: {
+      createYear: 2020,
+      suffix: "Mcoo 墨客小筑",
+    },
     customHtml: "<span id=\"runtime\"></span>",
     topMessage: []
   },

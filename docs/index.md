@@ -35,6 +35,26 @@ features:
 
 `Mcoo 墨客小筑` 采用 `Teek` 主题，您可以在右上角 <TkIcon :icon="readingIcon" :size="20" /> 图标处调整搭配网站的主题至您喜欢的风格。
 
+以下为我们日常使用的联系方式，欢迎加入与我们交流！
+
+若是对服务器很感兴趣，可以 @交流群内的管理员哦~
+
+::: shareCard
+```yaml
+- name: QQ
+  desc: 加入QQ群，与我们交流、分享经验
+  link: https://qm.qq.com/q/T7QTA988U2
+  bgColor: '#c7effcff'
+  textColor: '#242A38'
+
+- name: OOPZ
+  desc: 这是我们常用的语音交流频道
+  link: https://oopz.cn/i/Bh6ewS
+  bgColor: '#DFEEE7'
+  textColor: '#2A3344'
+```
+:::
+
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useData } from "vitepress";
