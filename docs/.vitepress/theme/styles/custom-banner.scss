@@ -1,0 +1,38 @@
+.tk-banner-content {
+  .tk-banner-content__desc {
+    color: #ffffff !important;
+    background: transparent !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    white-space: pre-wrap !important;
+    line-height: 1.8 !important;
+    
+    &::before,
+    &::after {
+      display: none !important;
+    }
+  }
+}
+
+[class*="banner-content__desc"],
+[class*="banner-desc"] {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  white-space: pre-wrap !important;
+  line-height: 1.8 !important;
+  
+  &::before,
+  &::after {
+    display: none !important;
+  }
+}
