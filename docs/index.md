@@ -33,7 +33,7 @@ features:
 
 ## 🎨 风格切换
 
-`Mcoo 墨客小筑` 采用 `Teek` 主题，您可以在右上角 <TkIcon :icon="readingIcon" :size="20" /> 图标处调整搭配网站的主题至您喜欢的风格。
+`Mcoo 墨客小筑` 基于 `Teek` 主题二次修改，您可以在右上角 <TkIcon :icon="readingIcon" :size="20" /> 图标处调整搭配网站的主题至您喜欢的风格。
 
 以下为我们日常使用的联系方式，欢迎加入与我们交流！
 
