@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MC Face 2 SVG - Minecraft 头像转矢量图工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .subtitle {
+            color: #8892b0;
+            font-size: 1.1rem;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 968px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel h2 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #00d4ff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel h2::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, #00d4ff, #7b2cbf);
+            border-radius: 2px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #a0a0a0;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: 'Courier New', monospace;
+        }
+
+        .hint {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 6px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #00d4ff;
+            cursor: pointer;
+        }
+
+        .range-group {
+            margin-bottom: 20px;
+        }
+
+        .range-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+            color: white;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #00b894, #00cec9);
+            color: white;
+        }
+
+        .preview-area {
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-area.has-content {
+            border-style: solid;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .preview-placeholder {
+            text-align: center;
+            color: #6c757d;
+        }
+
+        .preview-placeholder svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        #preview-canvas {
+            display: none;
+            image-rendering: pixelated;
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        #svg-output {
+            display: none;
+            width: 100%;
+            max-width: 512px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .batch-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .batch-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .batch-item.success {
+            border-color: rgba(0, 184, 148, 0.3);
+            background: rgba(0, 184, 148, 0.1);
+        }
+
+        .batch-item.error {
+            border-color: rgba(255, 71, 87, 0.3);
+            background: rgba(255, 71, 87, 0.1);
+        }
+
+        .batch-item.processing {
+            border-color: rgba(0, 212, 255, 0.3);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .status-icon {
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 12px;
+        }
+
+        .success .status-icon { background: #00b894; }
+        .error .status-icon { background: #ff4757; }
+        .processing .status-icon { background: #00d4ff; animation: pulse 1.5s infinite; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 2px;
+            margin-top: 20px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar.active {
+            display: block;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .drop-zone {
+            border: 2px dashed rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.dragover {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .drop-zone svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 12px;
+            color: #00d4ff;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            background: none;
+            border: none;
+            color: #8892b0;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 16px 24px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            color: white;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+        }
+
+        .toast.show {
+            display: flex;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+
+        .error-log {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            border-radius: 8px;
+            display: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .error-log.show {
+            display: block;
+        }
+
+        .error-title {
+            color: #ff4757;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .error-item {
+            font-size: 0.85rem;
+            color: #e0e0e0;
+            margin: 4px 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .info-box {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .info-box strong {
+            color: #00d4ff;
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MC Face 2 SVG</h1>
+            <p class="subtitle">将 Minecraft 玩家皮肤转换为高清矢量图标</p>
+        </header>
+
+        <div class="main-grid">
+            <!-- 左侧控制面板 -->
+            <div class="left-column">
+                <div class="panel">
+                    <h2>输入方式</h2>
+
+                    <div class="tabs">
+                        <button class="tab active" onclick="switchTab('username')">用户名</button>
+                        <button class="tab" onclick="switchTab('uuid')">UUID</button>
+                        <button class="tab" onclick="switchTab('file')">上传皮肤</button>
+                    </div>
+
+                    <!-- 用户名输入 -->
+                    <div id="tab-username" class="tab-content active">
+                        <div class="input-group">
+                            <label>玩家用户名（每行一个）</label>
+                            <textarea id="usernames" placeholder="Steve&#10;Alex&#10;Notch&#10;...">Steve</textarea>
+                            <div class="hint">支持批量处理，每行输入一个用户名</div>
+                        </div>
+                    </div>
+
+                    <!-- UUID输入 -->
+                    <div id="tab-uuid" class="tab-content">
+                        <div class="input-group">
+                            <label>玩家 UUID</label>
+                            <input type="text" id="uuid-input" placeholder="例如: 8667ba71b85a4004af54457a9734ed7c">
+                            <div class="hint">输入玩家的 UUID（不带横线或带横线均可）</div>
+                        </div>
+                    </div>
+
+                    <!-- 文件上传 -->
+                    <div id="tab-file" class="tab-content">
+                        <div class="drop-zone" id="drop-zone">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            <div>拖放皮肤文件到此处，或点击上传</div>
+                            <div style="font-size: 0.85rem; color: #6c757d; margin-top: 8px;">支持 64x64 或 64x32 像素的皮肤 PNG</div>
+                            <input type="file" id="file-input" accept="image/png" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-top: 20px;">
+                    <h2>输出设置</h2>
+
+                    <div class="range-group">
+                        <div class="range-header">
+                            <label>SVG 尺寸</label>
+                            <span id="size-value">512px</span>
+                        </div>
+                        <input type="range" id="svg-size" min="64" max="1024" value="512" step="64">
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="include-hat" checked>
+                        <label for="include-hat" style="margin: 0; cursor: pointer;">包含帽子层（第二层）</label>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="crisp-edges" checked>
+                        <label for="crisp-edges" style="margin: 0; cursor: pointer;">锐化边缘（保持像素感）</label>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="add-stroke">
+                        <label for="add-stroke" style="margin: 0; cursor: pointer;">添加描边（增强边界）</label>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="batch-mode">
+                        <label for="batch-mode" style="margin: 0; cursor: pointer;">批量打包下载（ZIP）</label>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="generateSVG()" style="margin-top: 10px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        生成 SVG
+                    </button>
+
+                    <div class="loading-spinner" id="loading"></div>
+                    <div class="progress-bar" id="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+
+                    <div class="error-log" id="error-log">
+                        <div class="error-title">⚠️ 错误日志</div>
+                        <div id="error-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧预览面板 -->
+            <div class="right-column">
+                <div class="panel" style="height: 100%;">
+                    <h2>预览与导出</h2>
+
+                    <div class="preview-area" id="preview-area">
+                        <div class="preview-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                            <div>在左侧输入玩家信息并点击"生成 SVG"</div>
+                        </div>
+                        <canvas id="preview-canvas"></canvas>
+                        <div id="svg-output"></div>
+                    </div>
+
+                    <div class="action-buttons" id="action-buttons" style="display: none;">
+                        <button class="btn btn-success" onclick="downloadSVG()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            下载 SVG
+                        </button>
+                        <button class="btn btn-secondary" onclick="copySVG()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            复制代码
+                        </button>
+                        <button class="btn btn-secondary" onclick="viewCode()">
+                            查看源码
+                        </button>
+                    </div>
+
+                    <div class="batch-list" id="batch-list"></div>
+
+                    <div class="stats" id="stats" style="display: none;">
+                        <div class="stat-box">
+                            <div class="stat-value" id="stat-total">0</div>
+                            <div class="stat-label">总计</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="stat-success">0</div>
+                            <div class="stat-label">成功</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="stat-failed">0</div>
+                            <div class="stat-label">失败</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SVG 源码模态框 -->
+        <div id="code-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center;">
+            <div style="background: #1a1a2e; border-radius: 16px; padding: 30px; max-width: 800px; width: 90%; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="color: #00d4ff;">SVG 源代码</h3>
+                    <button onclick="closeCodeModal()" style="background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">×</button>
+                </div>
+                <div class="code-block" id="code-content" style="flex: 1; overflow-y: auto;"></div>
+                <button class="btn btn-secondary" onclick="copyCodeFromModal()" style="margin-top: 20px;">复制全部代码</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <span id="toast-icon">✓</span>
+        <span id="toast-message">操作成功</span>
+    </div>
+
+    <!-- JSZip 库用于批量打包 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <script>
+        // 全局状态
+        let currentSVG = null;
+        let currentFilename = 'minecraft-face.svg';
+        let batchResults = [];
+        let uploadedImage = null;
+
+        // 切换标签页
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(`tab-${tab}`).classList.add('active');
+        }
+
+        // 文件拖放处理
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) handleFile(files[0]);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) handleFile(e.target.files[0]);
+        });
+
+        function handleFile(file) {
+            if (!file.name.endsWith('.png')) {
+                showToast('请上传 PNG 格式的皮肤文件', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    uploadedImage = img;
+                    showToast(`已加载: ${file.name} (${img.width}x${img.height})`, 'success');
+                };
+                img.onerror = () => showToast('图片加载失败', 'error');
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 更新尺寸显示
+        document.getElementById('svg-size').addEventListener('input', (e) => {
+            document.getElementById('size-value').textContent = e.target.value + 'px';
+        });
+
+        // 显示提示
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            const msg = document.getElementById('toast-message');
+
+            msg.textContent = message;
+            icon.textContent = type === 'success' ? '✓' : '✕';
+            toast.style.borderColor = type === 'success' ? 'rgba(0, 184, 148, 0.3)' : 'rgba(255, 71, 87, 0.3)';
+
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // 判断输入是 UUID 还是用户名
+        function isUUID(str) {
+            // 移除所有横线后检查是否为 32 位十六进制
+            const clean = str.replace(/-/g, '').toLowerCase();
+            return /^[0-9a-f]{32}$/.test(clean);
+        }
+
+        // 使用 Crafatar 获取皮肤（支持用户名和 UUID，无需 CORS 代理）
+        async function getSkinFromCrafatar(identifier) {
+            // Crafatar 支持用户名或 UUID 直接查询皮肤
+            // 使用 ?default=MHF_Steve 确保即使玩家不存在也返回默认皮肤而不是 404
+            return `https://crafatar.com/skins/${identifier}?default=MHF_Steve`;
+        }
+
+        // 加载图片
+        function loadImage(src) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => resolve(img);
+                img.onerror = () => reject(new Error('图片加载失败，请检查网络连接'));
+                img.src = src;
+            });
+        }
+
+        // 主生成函数
+        async function generateSVG() {
+            const loading = document.getElementById('loading');
+            const progressBar = document.getElementById('progress-bar');
+            const progressFill = document.getElementById('progress-fill');
+            const previewArea = document.getElementById('preview-area');
+            const actionButtons = document.getElementById('action-buttons');
+            const errorLog = document.getElementById('error-log');
+            const errorList = document.getElementById('error-list');
+
+            loading.classList.add('active');
+            previewArea.classList.add('has-content');
+            errorLog.classList.remove('show');
+            errorList.innerHTML = '';
+
+            const size = parseInt(document.getElementById('svg-size').value);
+            const includeHat = document.getElementById('include-hat').checked;
+            const crispEdges = document.getElementById('crisp-edges').checked;
+            const addStroke = document.getElementById('add-stroke').checked;
+            const batchMode = document.getElementById('batch-mode').checked;
+
+            batchResults = [];
+
+            // 判断当前标签页
+            const activeTab = document.querySelector('.tab.active').textContent;
+
+            if (activeTab === '上传皮肤' && uploadedImage) {
+                // 处理上传的文件
+                try {
+                    const svg = await processSkinImage(uploadedImage, {
+                        size, includeHat, crispEdges, addStroke
+                    });
+                    displayResult(svg, 'uploaded-skin.svg');
+                    showToast('生成成功！', 'success');
+                } catch (e) {
+                    showToast('处理失败: ' + e.message, 'error');
+                    addError('上传文件', e.message);
+                }
+            } else {
+                // 处理用户名或 UUID
+                let inputList = [];
+                if (activeTab === '用户名') {
+                    const textarea = document.getElementById('usernames');
+                    inputList = textarea.value.split('\n').map(s => s.trim()).filter(s => s);
+                } else {
+                    const uuid = document.getElementById('uuid-input').value.trim();
+                    if (uuid) inputList = [uuid];
+                }
+
+                if (inputList.length === 0) {
+                    showToast('请输入有效的玩家信息', 'error');
+                    loading.classList.remove('active');
+                    return;
+                }
+
+                // 批量处理
+                if (batchMode && inputList.length > 1) {
+                    progressBar.classList.add('active');
+                    document.getElementById('batch-list').innerHTML = '';
+                    document.getElementById('stats').style.display = 'grid';
+                }
+
+                let success = 0, failed = 0;
+                const zip = batchMode ? new JSZip() : null;
+
+                for (let i = 0; i < inputList.length; i++) {
+                    const input = inputList[i];
+
+                    if (batchMode) {
+                        progressFill.style.width = `${((i + 1) / inputList.length) * 100}%`;
+                        addBatchItem(input, 'processing');
+                    }
+
+                    try {
+                        // 直接使用 Crafatar 获取皮肤（支持用户名或 UUID）
+                        const skinUrl = await getSkinFromCrafatar(input);
+                        console.log(`获取皮肤: ${input} -> ${skinUrl}`);
+
+                        // 加载皮肤图片
+                        const img = await loadImage(skinUrl);
+                        console.log(`皮肤加载成功: ${img.width}x${img.height}`);
+
+                        // 生成 SVG
+                        const svg = await processSkinImage(img, {
+                            size, includeHat, crispEdges, addStroke
+                        });
+
+                        const filename = `${input}.svg`;
+
+                        if (batchMode) {
+                            zip.file(filename, svg);
+                            updateBatchItem(input, 'success');
+                            batchResults.push({ name: input, svg, status: 'success' });
+                        } else {
+                            displayResult(svg, filename);
+                        }
+                        success++;
+                    } catch (e) {
+                        console.error(`处理 ${input} 失败:`, e);
+                        const errorMsg = e.message || '未知错误';
+                        if (batchMode) {
+                            updateBatchItem(input, 'error', errorMsg);
+                            batchResults.push({ name: input, error: errorMsg, status: 'error' });
+                        }
+                        addError(input, errorMsg);
+                        failed++;
+                    }
+
+                    // 批量处理时添加延迟，避免请求过快
+                    if (batchMode && i < inputList.length - 1) {
+                        await new Promise(r => setTimeout(r, 300));
+                    }
+                }
+
+                if (batchMode) {
+                    if (success > 0) {
+                        const content = await zip.generateAsync({ type: 'blob' });
+                        downloadBlob(content, 'minecraft-faces.zip');
+                        showToast(`批量下载完成！成功: ${success}, 失败: ${failed}`, failed === 0 ? 'success' : 'error');
+                    } else {
+                        showToast('所有任务都失败了，请检查错误日志', 'error');
+                        errorLog.classList.add('show');
+                    }
+                } else if (success > 0) {
+                    showToast('生成成功！', 'success');
+                } else {
+                    showToast('生成失败，请查看错误日志', 'error');
+                    errorLog.classList.add('show');
+                }
+
+                // 更新统计
+                document.getElementById('stat-total').textContent = inputList.length;
+                document.getElementById('stat-success').textContent = success;
+                document.getElementById('stat-failed').textContent = failed;
+            }
+
+            loading.classList.remove('active');
+            progressBar.classList.remove('active');
+            actionButtons.style.display = 'flex';
+        }
+
+        // 添加错误日志
+        function addError(context, message) {
+            const errorList = document.getElementById('error-list');
+            const item = document.createElement('div');
+            item.className = 'error-item';
+            item.textContent = `[${context}] ${message}`;
+            errorList.appendChild(item);
+            document.getElementById('error-log').classList.add('show');
+        }
+
+        // 处理皮肤图片生成 SVG
+        async function processSkinImage(img, options) {
+            const { size, includeHat, crispEdges, addStroke } = options;
+
+            // 创建 canvas 提取像素
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            // 处理不同尺寸的皮肤
+            let faceCanvas = document.createElement('canvas');
+            let faceCtx = faceCanvas.getContext('2d');
+            faceCanvas.width = 8;
+            faceCanvas.height = 8;
+
+            // 检查图片尺寸
+            console.log(`处理皮肤: ${img.width}x${img.height}`);
+
+            if (img.width >= 64 && img.height >= 32) {
+                // 标准皮肤格式
+                // 脸部基础层在 (8,8) 位置，8x8 像素
+                faceCtx.drawImage(img, 8, 8, 8, 8, 0, 0, 8, 8);
+
+                if (includeHat) {
+                    // 帽子层在 (40,8) 位置，8x8 像素（64x64 格式）
+                    // 旧版 64x32 皮肤在 (40,8) 也是帽子层
+                    faceCtx.globalCompositeOperation = 'source-over';
+                    faceCtx.drawImage(img, 40, 8, 8, 8, 0, 0, 8, 8);
+                }
+            } else {
+                // 非标准尺寸，假设已经是头像
+                console.warn(`非标准皮肤尺寸: ${img.width}x${img.height}，尝试直接缩放`);
+                faceCtx.drawImage(img, 0, 0, 8, 8);
+            }
+
+            // 获取像素数据
+            const imageData = faceCtx.getImageData(0, 0, 8, 8);
+            const pixels = imageData.data;
+
+            // 生成 SVG
+            const pixelSize = size / 8;
+            let rects = [];
+
+            for (let y = 0; y < 8; y++) {
+                for (let x = 0; x < 8; x++) {
+                    const idx = (y * 8 + x) * 4;
+                    const r = pixels[idx];
+                    const g = pixels[idx + 1];
+                    const b = pixels[idx + 2];
+                    const a = pixels[idx + 3] / 255;
+
+                    if (a > 0.1) { // 透明度阈值
+                        const color = `rgb(${r},${g},${b})`;
+                        const stroke = addStroke ? ` stroke="${color}" stroke-width="0.5"` : '';
+                        rects.push(`<rect x="${x * pixelSize}" y="${y * pixelSize}" width="${pixelSize}" height="${pixelSize}" fill="${color}"${stroke}/>`);
+                    }
+                }
+            }
+
+            const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"${crispEdges ? ' shape-rendering="crispEdges"' : ''}>
+${rects.join('\n')}
+</svg>`;
+
+            return svg;
+        }
+
+        // 显示结果
+        function displayResult(svg, filename) {
+            currentSVG = svg;
+            currentFilename = filename;
+
+            // 显示 SVG
+            const output = document.getElementById('svg-output');
+            output.innerHTML = svg;
+            output.style.display = 'block';
+
+            // 隐藏 canvas 和 placeholder
+            document.getElementById('preview-canvas').style.display = 'none';
+            document.querySelector('.preview-placeholder').style.display = 'none';
+        }
+
+        // 下载 SVG
+        function downloadSVG() {
+            if (!currentSVG) return;
+
+            const blob = new Blob([currentSVG], { type: 'image/svg+xml' });
+            downloadBlob(blob, currentFilename);
+            showToast('下载已开始', 'success');
+        }
+
+        // 下载 Blob
+        function downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // 复制 SVG 代码
+        function copySVG() {
+            if (!currentSVG) return;
+
+            navigator.clipboard.writeText(currentSVG).then(() => {
+                showToast('SVG 代码已复制到剪贴板', 'success');
+            }).catch(() => {
+                showToast('复制失败', 'error');
+            });
+        }
+
+        // 查看源码
+        function viewCode() {
+            if (!currentSVG) return;
+
+            document.getElementById('code-content').textContent = currentSVG;
+            document.getElementById('code-modal').style.display = 'flex';
+        }
+
+        function closeCodeModal() {
+            document.getElementById('code-modal').style.display = 'none';
+        }
+
+        function copyCodeFromModal() {
+            const code = document.getElementById('code-content').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                showToast('代码已复制', 'success');
+            });
+        }
+
+        // 批量列表操作
+        function addBatchItem(name, status) {
+            const list = document.getElementById('batch-list');
+            const item = document.createElement('div');
+            item.className = `batch-item ${status}`;
+            item.id = `batch-${name}`;
+            item.innerHTML = `
+                <span>${name}</span>
+                <span class="status-icon">${status === 'processing' ? '◉' : status === 'success' ? '✓' : '✕'}</span>
+            `;
+            list.appendChild(item);
+            list.scrollTop = list.scrollHeight;
+        }
+
+        function updateBatchItem(name, status, error = '') {
+            const item = document.getElementById(`batch-${name}`);
+            if (item) {
+                item.className = `batch-item ${status}`;
+                item.querySelector('.status-icon').textContent = status === 'success' ? '✓' : '✕';
+                if (error) item.title = error;
+            }
+        }
+
+        // 点击模态框背景关闭
+        document.getElementById('code-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'code-modal') closeCodeModal();
+        });
+
+        // ESC 关闭模态框
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeCodeModal();
+        });
+    </script>
+</body>
+</html>
