@@ -24,6 +24,7 @@ import "./styles/custom-banner.scss";
 import "./styles/blur.css";
 import "./styles/mermaid.scss";
 import "./style/link.css";
+import "./style/marker.css";
 
 export default {
   extends: Teek,
