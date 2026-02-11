@@ -1,5 +1,7 @@
 import Teek from "vitepress-theme-teek";
 import TeekLayoutProvider from "./components/TeekLayoutProvider.vue";
+import Linkcard from "./components/Linkcard.vue";
+import Mermaid from "./components/Mermaid.vue";
 
 import "vitepress-theme-teek/index.css";
 import "vitepress-theme-teek/theme-chalk/tk-code-block-mobile.css";
@@ -20,10 +22,13 @@ import "./styles/iframe.scss";
 import "./styles/custom-banner.scss";
 import "./styles/blur.css";
 import "./styles/mermaid.scss";
+import "./style/link.css";
 
 export default {
   extends: Teek,
   Layout: TeekLayoutProvider,
-  enhanceApp() {
+  enhanceApp({ app }: { app: any }) {
+    app.component('Linkcard', Linkcard);
+    app.component('Mermaid', Mermaid);
   },
 };

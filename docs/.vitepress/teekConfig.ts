@@ -127,7 +127,7 @@ export const teekConfig = defineTeekConfig({
       ]
     }
   },
-  author: { name: "Mcoo 管理组", link: "https://github.com/Kele-Bingtang" },
+  author: { name: "Mcoo 管理组", link: "https://space.bilibili.com/3690988828625493?spm_id_from=333.337.0.0" },
   articleShare: { enabled: true },
   vitePlugins: {
     sidebarOption: {
