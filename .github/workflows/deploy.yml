@@ -1,19 +1,32 @@
-name: Deploy to Retinbox Web Hosting
+name: Deploy to Retiehe
 
 on: push
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    container:
-      image: shangzheny/rth-host-helper:latest
-
     steps:
-      - name: Deploy to Retinbox Web Hosting
-        uses: rthsoftware/host-auto-deploy@master
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build site
+        run: pnpm run docs:build
+
+      - name: Deploy to Retiehe
+        run: pnpm run deploy
         env:
           RTH_API_KEY: ${{ secrets.RTH_API_KEY }}
-        with:
-          site: "mcoo.top"
-          build: "docs:build"
-          outdir: "docs/.vitepress/dist"
