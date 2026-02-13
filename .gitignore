@@ -36,11 +36,3 @@ wrangler.toml
 # VitePress 构建输出（更精确的路径）
 docs/.vitepress/dist/
 docs/.vitepress/.temp/
-
-# 热铁盒部署配置（包含 API 密钥，很重要！）
-.rth/
-
-# 环境变量文件
-.env
-.env.local
-.env.*.local
