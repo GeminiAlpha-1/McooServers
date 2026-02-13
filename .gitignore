@@ -36,4 +36,3 @@ wrangler.toml
 # VitePress 构建输出（更精确的路径）
 docs/.vitepress/dist/
 docs/.vitepress/.temp/
-.env
