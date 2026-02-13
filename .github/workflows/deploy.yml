@@ -26,7 +26,11 @@ jobs:
       - name: Build site
         run: pnpm run docs:build
 
-      - name: Deploy to Retiehe
-        run: pnpm run deploy
+      - name: Deploy to Retiehe (Linux native)
+        run: |
+          f=$(mktemp)
+          curl -fSL https://host.retiehe.com/cli -o $f
+          node $f --site mcoo.top --outdir ./docs/.vitepress/dist
+          rm $f
         env:
           RTH_API_KEY: ${{ secrets.RTH_API_KEY }}
