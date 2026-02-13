@@ -4,7 +4,7 @@ import { version } from "vitepress-theme-teek/es/version";
 export const teekConfig = defineTeekConfig({
   teekHome: true,
   vpHome: false,
-  loading: "Welcome to Mcoo ...",
+  loading: false,
   wallpaper: {
     enabled: true,
     hideBanner: true
@@ -127,7 +127,7 @@ export const teekConfig = defineTeekConfig({
       ]
     }
   },
-  author: { name: "Mcoo 管理组", link: "https://space.bilibili.com/3690988828625493?spm_id_from=333.337.0.0" },
+  author: { name: "Mcoo 管理组", link: "https://space.bilibili.com/3690988828625493" },
   articleShare: { enabled: true },
   vitePlugins: {
     sidebarOption: {
