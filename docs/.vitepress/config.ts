@@ -80,10 +80,11 @@ export default defineConfig({
         items: [
           { text: "归档页", link: "/archives" },
           { text: "团队介绍", link: "/team" },
+          { text: "资源下载", link: "/" },
+          { text: "图床", link: "https://imghub.mcoo.top/" },
+          { text: "云图", link: "https://image.rseg.club/" },
         ]
-      },
-      { text: "Mcoo 图床", link: "https://imghub.mcoo.top/" },
-      { text: "Mcoo 云图", link: "https://image.rseg.club/" }
+      }
     ],
     socialLinks: [
       {
