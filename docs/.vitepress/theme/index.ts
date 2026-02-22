@@ -3,6 +3,7 @@ import TeekLayoutProvider from "./components/TeekLayoutProvider.vue";
 import Linkcard from "./components/Linkcard.vue";
 import Mermaid from "./components/Mermaid.vue";
 import TeamMembers from "./components/TeamMembers.vue";
+import BiliVideo from "./components/BiliVideo.vue";
 
 import "vitepress-theme-teek/index.css";
 import "vitepress-theme-teek/theme-chalk/tk-code-block-mobile.css";
@@ -33,5 +34,6 @@ export default {
     app.component('Linkcard', Linkcard);
     app.component('Mermaid', Mermaid);
     app.component('TeamMembers', TeamMembers);
+    app.component('BiliVideo', BiliVideo);
   },
 };
