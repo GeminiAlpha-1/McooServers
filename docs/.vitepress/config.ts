@@ -75,16 +75,22 @@ export default defineConfig({
     },
     nav: [
       { text: "首页", link: "/" },
+      { text: "资源", link: "/mrds" },
       {
         text: "其他",
         items: [
           { text: "归档页", link: "/archives" },
           { text: "团队介绍", link: "/team" },
-          { text: "资源下载", link: "/" },
           { text: "图床", link: "https://imghub.mcoo.top/" },
-          { text: "云图", link: "https://image.rseg.club/" },
+          { text: "云图", link: "https://image.rseg.club/" }
         ]
-      }
+      },
+      {
+        text: "友链",
+        items: [
+          { text: "莫 の 窝", link: "https://blog.mostu.cn" }
+        ]
+      },
     ],
     socialLinks: [
       {
