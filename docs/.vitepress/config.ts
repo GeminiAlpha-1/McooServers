@@ -46,7 +46,7 @@ export default defineConfig({
     },
   },
   sitemap: {
-    hostname: "https://mcoo.top",
+    hostname: "https://www.mcoo.top",
     transformItems: (items) => {
       const permalinkItemBak: any[] = [];
       const permalinks = (globalThis as any).VITEPRESS_CONFIG.site.themeConfig
@@ -82,7 +82,8 @@ export default defineConfig({
           { text: "团队介绍", link: "/team" },
         ]
       },
-      { text: "Mcoo 图床", link: "https://imghub.mcoo.top/" }
+      { text: "Mcoo 图床", link: "https://imghub.mcoo.top/" },
+      { text: "Mcoo 云图", link: "https://image.rseg.club/" }
     ],
     socialLinks: [
       {
