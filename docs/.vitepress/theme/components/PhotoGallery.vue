@@ -59,6 +59,7 @@ const getRandomHeight = () => {
 
 const photoItems = ref<{ src: string; alt?: string; height: number; left: number; top: number }[]>([])
 const masonryHeight = ref(400)
+const containerOffsetX = ref(0)
 
 const distributePhotos = () => {
   if (!masonryRef.value) return
@@ -71,12 +72,16 @@ const distributePhotos = () => {
   const columns = Math.max(1, Math.floor((containerWidth + gap) / (CARD_WIDTH + gap)))
   const columnHeights = new Array(columns).fill(0)
   
+  const totalContentWidth = columns * CARD_WIDTH + (columns - 1) * gap
+  const offsetX = (containerWidth - totalContentWidth) / 2
+  containerOffsetX.value = offsetX
+  
   photoItems.value = displayedPhotos.value.map((photo) => {
     const minHeight = Math.min(...columnHeights)
     const minColumn = columnHeights.indexOf(minHeight)
     
     const photoHeight = getRandomHeight()
-    const left = minColumn * (CARD_WIDTH + gap)
+    const left = minColumn * (CARD_WIDTH + gap) + offsetX
     const top = columnHeights[minColumn]
     
     columnHeights[minColumn] += photoHeight + gap
@@ -166,12 +171,12 @@ const closeLightbox = () => {
 
 <template>
   <div class="photo-gallery">
-    <div class="gallery-header">
+    <div class="gallery-header" :style="{ paddingLeft: containerOffsetX + 'px' }">
       <h1 class="gallery-title">用图片记录生活</h1>
       <p class="gallery-subtitle">每一张图片都是一个故事，一段回忆，一种情感的表达。</p>
     </div>
 
-    <div v-if="categories.length > 1" class="category-tabs">
+    <div v-if="categories.length > 1" class="category-tabs" :style="{ paddingLeft: containerOffsetX + 'px' }">
       <button 
         v-for="(category, index) in categories" 
         :key="index"
