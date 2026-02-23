@@ -4,6 +4,9 @@ import Linkcard from "./components/Linkcard.vue";
 import Mermaid from "./components/Mermaid.vue";
 import TeamMembers from "./components/TeamMembers.vue";
 import BiliVideo from "./components/BiliVideo.vue";
+import ImageGallery from "./components/ImageGallery.vue";
+import AuthorCard from "./components/AuthorCard.vue";
+import DownloadCard from "./components/DownloadCard.vue";
 
 import "vitepress-theme-teek/index.css";
 import "vitepress-theme-teek/theme-chalk/tk-code-block-mobile.css";
@@ -35,5 +38,8 @@ export default {
     app.component('Mermaid', Mermaid);
     app.component('TeamMembers', TeamMembers);
     app.component('BiliVideo', BiliVideo);
+    app.component('ImageGallery', ImageGallery);
+    app.component('AuthorCard', AuthorCard);
+    app.component('DownloadCard', DownloadCard);
   },
 };

@@ -79,8 +79,8 @@ export default defineConfig({
       {
         text: "其他",
         items: [
-          { text: "归档页", link: "/archives" },
-          { text: "团队介绍", link: "/team" },
+          { text: "归档", link: "/archives" },
+          { text: "团队", link: "/team" },
           { text: "图床", link: "https://imghub.mcoo.top/" },
           { text: "云图", link: "https://image.rseg.club/" }
         ]
@@ -88,7 +88,9 @@ export default defineConfig({
       {
         text: "友链",
         items: [
-          { text: "莫 の 窝", link: "https://blog.mostu.cn" }
+          { text: "MineTale 日志站", link: "https://minetale.top" },
+          { text: "MC百科 找服玩", link: "https://play.mcmod.cn/sv20188666.html" },
+          { text: "莫 の 窝", link: "https://blog.mostu.cn" },
         ]
       },
     ],

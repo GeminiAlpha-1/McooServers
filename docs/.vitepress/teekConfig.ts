@@ -32,6 +32,7 @@ export const teekConfig = defineTeekConfig({
     { provider: "baidu", options: { id: "a8cc7d1a22ec067b8b4bb0e237953a66" } },
   ],
   friendLink: {
+    enabled: false,
     list: [
       {
         name: "MineTale日志站",

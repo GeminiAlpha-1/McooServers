@@ -82,3 +82,31 @@
     top: -4px;
     margin-right: 4px;
 }
+
+/* 百度网盘 */
+.vp-doc a[href^="https://pan.baidu.com/"]:before {
+    content: '';
+    background-image: url(/icons/baidu.svg);
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    background-size: cover;
+    top: -2px;
+    margin-right: 4px;
+}
+
+/* Gitee */
+.vp-doc a[href^="https://gitee.com/"]:before {
+    content: '';
+    background-image: url(/icons/gitee.svg);
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    background-size: cover;
+    top: -2px;
+    margin-right: 4px;
+}
