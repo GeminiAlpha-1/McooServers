@@ -8,6 +8,7 @@ import ImageGallery from "./components/ImageGallery.vue";
 import AuthorCard from "./components/AuthorCard.vue";
 import DownloadCard from "./components/DownloadCard.vue";
 import SubmissionForm from "./components/SubmissionForm.vue";
+import PhotoGallery from "./components/PhotoGallery.vue";
 
 import "vitepress-theme-teek/index.css";
 import "vitepress-theme-teek/theme-chalk/tk-code-block-mobile.css";
@@ -43,5 +44,6 @@ export default {
     app.component('AuthorCard', AuthorCard);
     app.component('DownloadCard', DownloadCard);
     app.component('SubmissionForm', SubmissionForm);
+    app.component('PhotoGallery', PhotoGallery);
   },
 };

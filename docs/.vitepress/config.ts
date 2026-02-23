@@ -76,6 +76,7 @@ export default defineConfig({
     nav: [
       { text: "首页", link: "/" },
       { text: "资源", link: "/mrds" },
+      { text: "相册", link: "/photo" },
       {
         text: "其他",
         items: [
