@@ -4,7 +4,7 @@ import { version } from "vitepress-theme-teek/es/version";
 export const teekConfig = defineTeekConfig({
   teekHome: true,
   vpHome: false,
-  loading: false,
+  loading: "Welcome to Mcoo 墨客小筑 ……",
   wallpaper: {
     enabled: true,
     hideBanner: true
