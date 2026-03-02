@@ -328,7 +328,7 @@ export const teekConfig = defineTeekConfig({
     },
     // ICP 备案信息配置
     icpRecord: {
-      name: "桂ICP备2021009994号",
+      name: "皖ICP备2026005046号-1",
       link: "http://beian.miit.gov.cn/",
     },
     // 网络安全备案信息配置
