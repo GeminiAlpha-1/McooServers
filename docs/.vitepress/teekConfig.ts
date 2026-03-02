@@ -11,11 +11,16 @@ export const teekConfig = defineTeekConfig({
   },
   footerInfo: {
     theme: {
+      show: false,
       name: `Theme By Teek@${version}`,
     },
     copyright: {
       createYear: 2020,
       suffix: "Mcoo 墨客小筑",
+    },
+    icpRecord: {
+      name: "皖ICP备2026005046号-1",
+      link: "http://beian.miit.gov.cn/",
     },
     customHtml: "<span id=\"runtime\"></span>",
     topMessage: []
