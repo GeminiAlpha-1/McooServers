@@ -22,6 +22,10 @@ export const teekConfig = defineTeekConfig({
       name: "皖ICP备2026005046号-1",
       link: "http://beian.miit.gov.cn/",
     },
+    securityRecord: {
+      name: "皖公网安备34130202000834号",
+      link: "https://beian.mps.gov.cn/#/query/webSearch?code=34130202000834",
+    },
     customHtml: "<span id=\"runtime\"></span>",
     topMessage: []
   },
