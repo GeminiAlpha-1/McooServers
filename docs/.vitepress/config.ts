@@ -93,6 +93,7 @@ export default defineConfig({
           { text: "MineTale 日志站", link: "https://minetale.top" },
           { text: "MC百科 找服玩", link: "https://play.mcmod.cn/sv20188666.html" },
           { text: "莫 の 窝", link: "https://blog.mostu.cn" },
+          { text: "戈戈 の 窝", link: "https://clawblog.rseg.club/" },
           { text: "Github 加速", link: "https://gh-proxy.com/" },
         ]
       },
