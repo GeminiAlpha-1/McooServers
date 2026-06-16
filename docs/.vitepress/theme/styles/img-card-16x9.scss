@@ -1,0 +1,14 @@
+/* McooServers 自定义:imgCard 图片统一 16:9
+ * 解决成员上传图片比例不一导致卡片高度参差不齐的问题
+ * 原理:容器用 aspect-ratio 固定比例,内部 img 用 object-fit: cover 裁剪
+ * (2026-06-17 双灵提出)
+ */
+
+.container.img-card-container .img-card__item__img {
+  aspect-ratio: 16 / 9;
+  height: auto !important;
+
+  img {
+    aspect-ratio: 16 / 9;
+  }
+}
