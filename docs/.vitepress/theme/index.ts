@@ -32,8 +32,272 @@ import "./styles/blur.css";
 import "./styles/mermaid.scss";
 import "./styles/img-card-16x9.scss";
 import "./styles/scrollbar-stable.scss";
+import "./styles/image-viewer-egg.scss";
 import "./style/link.css";
 import "./style/marker.css";
+
+/* ------------------------------------------------------------------ */
+/* 图片查看器彩蛋(Teek ImageViewer)                                   */
+/* ------------------------------------------------------------------ */
+// 按住任一旋转按钮 → 越转越快 → 累计 720° (2 圈) → 飞走 + 渐显提示
+// 短按 (< 2 圈) → 松手回弹
+// 纯全局监听,不碰 Teek 源码
+function setupImageViewerEasterEgg() {
+  const FLY_AWAY_THRESHOLD = 720; // 累计转多少度触发飞走
+  const INITIAL_SPEED = 500; // 度/秒,起步就要有高速感
+  const ACCELERATION = 1.015; // 每帧速度倍率,加速更陡
+  const EGG_TRIGGER_DELAY = 200; // ms,按多久才进入彩蛋模式
+  const FLY_AWAY_DURATION = 800; // ms
+  const TIP_DISPLAY_DURATION = 3000; // ms
+
+  type EggState = {
+    direction: number
+    totalRotation: number
+    lastFrameTime: number
+    speed: number
+    rafId: number | null
+    isFadingOut: boolean
+    originalTransition: string
+  } | null
+
+  let eggState: EggState = null
+  let mousedownTime: number | null = null
+  let eggModeActive = false
+  let eggTriggerTimer: number | null = null
+
+  function getViewerImg(): HTMLElement | null {
+    return document.querySelector('.tk-image-viewer__canvas img')
+  }
+
+  function getViewerWrapper(): HTMLElement | null {
+    return document.querySelector('.tk-image-viewer__wrapper')
+  }
+
+  function getToolbarIcons(): HTMLElement[] {
+    const toolbar = document.querySelector('.tk-image-viewer__actions')
+    if (!toolbar) return []
+    return Array.from(toolbar.querySelectorAll('.tk-icon'))
+  }
+
+  // Teek ImageViewer 工具栏顺序已确认:
+  //   idx 0: zoomIn
+  //   idx 1: zoomOut
+  //   idx 2: originalSize
+  //   idx 3: refreshLeft (anticlockwise, -1)
+  //   idx 4: refreshRight (clockwise, +1)
+  //   idx 5: close
+  const DIRECTION_BY_IDX: Record<number, number> = {
+    3: -1,
+    4: 1,
+  }
+  function getDirection(icon: HTMLElement): number {
+    const icons = getToolbarIcons()
+    const idx = icons.indexOf(icon)
+    if (idx in DIRECTION_BY_IDX) return DIRECTION_BY_IDX[idx]
+    return 0
+  }
+
+  function startEgg(direction: number) {
+    if (direction === 0) return
+
+    const img = getViewerImg()
+    if (!img) return
+
+    // 锁定 viewer 防止用户乱点
+    const wrapper = getViewerWrapper()
+    if (wrapper) wrapper.style.pointerEvents = 'none'
+
+    eggState = {
+      direction,
+      totalRotation: 0,
+      lastFrameTime: performance.now(),
+      speed: INITIAL_SPEED,
+      rafId: null,
+      isFadingOut: false,
+      originalTransition: img.style.transition,
+    }
+
+    // 关闭 transition 以便实时跟随
+    img.style.transition = 'none'
+
+    const frame = () => {
+      if (!eggState) return
+
+      const now = performance.now()
+      const dt = (now - eggState.lastFrameTime) / 1000 // 秒
+      eggState.lastFrameTime = now
+
+      // 加速
+      eggState.speed *= ACCELERATION
+
+      // 旋转增量
+      const delta = eggState.speed * dt
+      eggState.totalRotation += delta * eggState.direction
+
+      // 更新 transform
+      const cur = getViewerImg()
+      if (cur) cur.style.transform = `rotate(${eggState.totalRotation}deg)`
+
+      // 达到飞走阈值
+      if (Math.abs(eggState.totalRotation) >= FLY_AWAY_THRESHOLD) {
+        flyAway()
+        return
+      }
+
+      eggState.rafId = requestAnimationFrame(frame)
+    }
+
+    eggState.rafId = requestAnimationFrame(frame)
+  }
+
+  function flyAway() {
+    if (!eggState || eggState.isFadingOut) return
+    eggState.isFadingOut = true
+
+    const img = getViewerImg()
+    if (!img) return
+
+    // 飞走动画:translateY(-150vh) + 多转 4 圈
+    img.style.transition = `transform ${FLY_AWAY_DURATION}ms cubic-bezier(0.6, 0, 0.4, 1)`
+    img.style.transform = `translateY(-150vh) rotate(${eggState.totalRotation + 1440}deg)`
+
+    // 飞走后渐显提示
+    setTimeout(() => {
+      const tip = document.createElement('div')
+      tip.className = 'mrds-fly-tip'
+      tip.textContent = '您的图片飞走啦~'
+      document.body.appendChild(tip)
+      requestAnimationFrame(() => tip.classList.add('show'))
+
+      // 3s 后关闭 viewer
+      setTimeout(() => {
+        tip.remove()
+        const closeBtn = document.querySelector('.tk-image-viewer__close') as HTMLElement | null
+        if (closeBtn) closeBtn.click()
+        else {
+          // fallback
+          const wrapper = getViewerWrapper()
+          if (wrapper) wrapper.style.display = 'none'
+        }
+        const w = getViewerWrapper()
+        if (w) w.style.pointerEvents = ''
+        eggState = null
+      }, TIP_DISPLAY_DURATION)
+    }, 600)
+  }
+
+  function stopEgg() {
+    if (!eggState) return
+    if (eggState.isFadingOut) return // 已经在飞走模式
+
+    if (eggState.rafId) cancelAnimationFrame(eggState.rafId)
+
+    const img = getViewerImg()
+    if (img) {
+      img.style.transition = 'transform 0.4s ease-out'
+      img.style.transform = 'rotate(0deg)'
+      // transition 结束后清掉 inline style,让 Teek 内部状态恢复控制
+      setTimeout(() => {
+        if (img) img.style.transition = eggState?.originalTransition ?? ''
+      }, 400)
+    }
+
+    const wrapper = getViewerWrapper()
+    if (wrapper) wrapper.style.pointerEvents = ''
+
+    eggState = null
+  }
+
+  // 全局 mousedown 监听(capture phase)
+  // 设计:不 preventDefault → 短按(< 200ms)click 自然触发,Teek 处理 90° 旋转
+  //       长按(≥ 200ms)进入彩蛋,接管 transform
+  document.addEventListener(
+    'mousedown',
+    (e) => {
+      const target = e.target as HTMLElement
+      const icon = target.closest('.tk-image-viewer__actions .tk-icon') as HTMLElement | null
+      if (!icon) return
+
+      const direction = getDirection(icon)
+      if (direction === 0) return // 不是旋转按钮
+
+      mousedownTime = performance.now()
+
+      // 200ms 后还按着 → 进入彩蛋模式
+      eggTriggerTimer = window.setTimeout(() => {
+        if (mousedownTime === null) return
+        eggModeActive = true
+        startEgg(direction)
+      }, EGG_TRIGGER_DELAY)
+    },
+    true,
+  )
+
+  document.addEventListener('mouseup', () => {
+    if (mousedownTime === null) return
+
+    if (eggTriggerTimer !== null) {
+      clearTimeout(eggTriggerTimer)
+      eggTriggerTimer = null
+    }
+
+    if (eggModeActive && eggState) {
+      stopEgg()
+    }
+
+    mousedownTime = null
+    eggModeActive = false
+  })
+
+  document.addEventListener('mouseleave', () => {
+    if (mousedownTime === null) return
+    if (eggTriggerTimer !== null) {
+      clearTimeout(eggTriggerTimer)
+      eggTriggerTimer = null
+    }
+    if (eggModeActive && eggState) {
+      stopEgg()
+    }
+    mousedownTime = null
+    eggModeActive = false
+  })
+
+  // 移动端兼容
+  document.addEventListener(
+    'touchstart',
+    (e) => {
+      const touch = e.touches[0]
+      if (!touch) return
+      const target = document.elementFromPoint(touch.clientX, touch.clientY) as HTMLElement | null
+      const icon = target?.closest('.tk-image-viewer__actions .tk-icon') as HTMLElement | null
+      if (!icon) return
+
+      const direction = getDirection(icon)
+      if (direction === 0) return
+
+      mousedownTime = performance.now()
+      eggTriggerTimer = window.setTimeout(() => {
+        if (mousedownTime === null) return
+        eggModeActive = true
+        startEgg(direction)
+      }, EGG_TRIGGER_DELAY)
+    },
+    { passive: true },
+  )
+
+  document.addEventListener('touchend', () => {
+    if (mousedownTime === null) return
+    if (eggTriggerTimer !== null) {
+      clearTimeout(eggTriggerTimer)
+      eggTriggerTimer = null
+    }
+    if (eggModeActive && eggState) {
+      stopEgg()
+    }
+    mousedownTime = null
+    eggModeActive = false
+  })
+}
 
 export default {
   extends: Teek,
@@ -49,7 +313,6 @@ export default {
     app.component('SubmissionForm', SubmissionForm);
     app.component('PhotoGallery', PhotoGallery);
     app.component('MRDSGrid', MRDSGrid);
-
     // 全站屏蔽右键菜单(放过可交互元素: input/textarea/a/button/contenteditable)
     // 效果:
     //   - 文字段落 / 装饰 / 图片右键不出菜单(防误触)
@@ -80,6 +343,12 @@ export default {
           },
           true,
         );
+
+        // ===== 图片查看器彩蛋 =====
+        // 按住任一旋转按钮 → 越转越快 → 累计 720° (2 圈) → 飞走 + 渐显提示
+        // 短按 (< 2 圈) → 松手回弹
+        // 不碰 Teek 源码,纯全局 mousedown 监听 + 直接接管 img.transform
+        setupImageViewerEasterEgg();
       };
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', blockEvents, { once: true });
