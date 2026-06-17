@@ -462,6 +462,18 @@ watch([query, currentCategory, currentPage], () => {
   }
 }
 
+/* 深色模式:hover 抬升 + 辉光(深底色下传统阴影看不到,用品牌色发光更明显) */
+.dark .mrds-card {
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 0 0 1px var(--vp-c-brand-1),
+      0 0 24px rgba(64, 158, 255, 0.45),
+      0 0 48px rgba(64, 158, 255, 0.25);
+    border-color: var(--vp-c-brand-1);
+  }
+}
+
 .mrds-card-cover {
   position: relative;
   width: 100%;
