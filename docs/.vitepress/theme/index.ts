@@ -43,18 +43,18 @@ import "./style/marker.css";
 // 短按 (< 2 圈) → 松手回弹
 // 纯全局监听,不碰 Teek 源码
 function setupImageViewerEasterEgg() {
-  const FLY_AWAY_THRESHOLD = 720; // 累计转多少度触发飞走
-  const INITIAL_SPEED = 500; // 度/秒,起步就要有高速感
-  const ACCELERATION = 1.015; // 每帧速度倍率,加速更陡
-  const EGG_TRIGGER_DELAY = 200; // ms,按多久才进入彩蛋模式
-  const FLY_AWAY_DURATION = 800; // ms
+  const INITIAL_SPEED = 50; // 度/秒,起步要慢(让用户看清方向)
+  const ACCELERATION_PER_SECOND = 1.7; // 每秒速度倍率(1.7 加速,10s 后到 14000°/s 螺旋桨级)
+  const EGG_TRIGGER_DELAY = 3000; // ms,长按 3 秒才进入彩蛋
+  const EGG_DURATION = 10000; // ms,转 10 秒后飞走(强制时长,不依赖松手)
+  const FLY_AWAY_ANIMATION = 800; // ms
   const TIP_DISPLAY_DURATION = 3000; // ms
 
   type EggState = {
     direction: number
     totalRotation: number
     lastFrameTime: number
-    speed: number
+    startTime: number
     rafId: number | null
     isFadingOut: boolean
     originalTransition: string
@@ -107,11 +107,12 @@ function setupImageViewerEasterEgg() {
     const wrapper = getViewerWrapper()
     if (wrapper) wrapper.style.pointerEvents = 'none'
 
+    const startTime = performance.now()
     eggState = {
       direction,
       totalRotation: 0,
-      lastFrameTime: performance.now(),
-      speed: INITIAL_SPEED,
+      lastFrameTime: startTime,
+      startTime,
       rafId: null,
       isFadingOut: false,
       originalTransition: img.style.transition,
@@ -127,19 +128,20 @@ function setupImageViewerEasterEgg() {
       const dt = (now - eggState.lastFrameTime) / 1000 // 秒
       eggState.lastFrameTime = now
 
-      // 加速
-      eggState.speed *= ACCELERATION
+      // 速度随时间指数增长(每秒 × 1.7)
+      const elapsed = (now - eggState.startTime) / 1000
+      const speed = INITIAL_SPEED * Math.pow(ACCELERATION_PER_SECOND, elapsed)
 
       // 旋转增量
-      const delta = eggState.speed * dt
+      const delta = speed * dt
       eggState.totalRotation += delta * eggState.direction
 
       // 更新 transform
       const cur = getViewerImg()
       if (cur) cur.style.transform = `rotate(${eggState.totalRotation}deg)`
 
-      // 达到飞走阈值
-      if (Math.abs(eggState.totalRotation) >= FLY_AWAY_THRESHOLD) {
+      // 满 EGG_DURATION 后飞走(强制时长,不依赖累计角度)
+      if (elapsed * 1000 >= EGG_DURATION) {
         flyAway()
         return
       }
@@ -158,7 +160,7 @@ function setupImageViewerEasterEgg() {
     if (!img) return
 
     // 飞走动画:translateY(-150vh) + 多转 4 圈
-    img.style.transition = `transform ${FLY_AWAY_DURATION}ms cubic-bezier(0.6, 0, 0.4, 1)`
+    img.style.transition = `transform ${FLY_AWAY_ANIMATION}ms cubic-bezier(0.6, 0, 0.4, 1)`
     img.style.transform = `translateY(-150vh) rotate(${eggState.totalRotation + 1440}deg)`
 
     // 飞走后渐显提示
