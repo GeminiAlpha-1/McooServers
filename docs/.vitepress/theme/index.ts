@@ -159,8 +159,8 @@ function setupImageViewerEasterEgg() {
     const img = getViewerImg()
     if (!img) return
 
-    // 飞走动画:translateY(-150vh) + 多转 4 圈
-    img.style.transition = `transform ${FLY_AWAY_ANIMATION}ms cubic-bezier(0.6, 0, 0.4, 1)`
+    // 飞走动画:translateY(-150vh) + 多转 4 圈,linear 保持匀速不减速
+    img.style.transition = `transform ${FLY_AWAY_ANIMATION}ms linear`
     img.style.transform = `translateY(-150vh) rotate(${eggState.totalRotation + 1440}deg)`
 
     // 飞走后渐显提示
