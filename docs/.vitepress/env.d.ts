@@ -25,5 +25,12 @@ declare module 'virtual:mrds-data' {
     author: MRDSAuthor
   }
 
+  /** 作者头像信息(用于投稿表单游戏 ID 实时补全) */
+  export interface MRDSAvatar {
+    gameId: string
+    avatar: string
+  }
+
   export const data: MRDSItem[]
+  export const avatars: MRDSAvatar[]
 }

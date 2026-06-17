@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick, watch } from 'vue'
+import { avatars as allAvatars } from 'virtual:mrds-data'
 
 const bvNumber = ref('')
 const workName = ref('')
@@ -35,15 +36,82 @@ const removeDownload = (index: number) => {
   }
 }
 
-const avatarPath = computed(() => {
-  if (gameId.value) {
-    return `/mcoo/${gameId.value}.png`
-  }
-  return ''
+/* ----- 游戏 ID 实时补全 ----- */
+// 最大展示数量(超过 1 排省略)
+const MAX_SUGGESTIONS = 8
+
+// 实时匹配:前缀匹配 (case-insensitive)
+const suggestions = computed(() => {
+  const q = gameId.value.trim().toLowerCase()
+  if (!q) return allAvatars  // 空输入显示全部
+  return allAvatars.filter((a) => a.gameId.toLowerCase().startsWith(q))
 })
 
-const showAvatarPreview = computed(() => {
-  return !!gameId.value
+// 候选面板可见性
+const showSuggestions = ref(false)
+const highlightedIndex = ref(0)
+
+// 限制可见数量
+const visibleSuggestions = computed(() => suggestions.value.slice(0, MAX_SUGGESTIONS))
+const hasMore = computed(() => suggestions.value.length > MAX_SUGGESTIONS)
+
+// 是否完全匹配(在预设列表里)
+const hasMatch = computed(() => {
+  return gameId.value.trim() !== '' && suggestions.value.some((a) => a.gameId === gameId.value.trim())
+})
+
+// 选中(点击 / Tab / Enter)
+function selectGameId(id: string) {
+  gameId.value = id
+  showSuggestions.value = false
+}
+
+// 键盘导航
+function onGameIdKeydown(e: KeyboardEvent) {
+  const list = visibleSuggestions.value
+  if (e.key === 'ArrowDown') {
+    e.preventDefault()
+    if (!showSuggestions.value) {
+      showSuggestions.value = true
+    } else if (list.length > 0) {
+      highlightedIndex.value = (highlightedIndex.value + 1) % list.length
+    }
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault()
+    if (list.length > 0) {
+      highlightedIndex.value = (highlightedIndex.value - 1 + list.length) % list.length
+    }
+  } else if (e.key === 'Enter' || e.key === 'Tab') {
+    if (showSuggestions.value && list.length > 0) {
+      e.preventDefault()
+      selectGameId(list[highlightedIndex.value].gameId)
+    }
+  } else if (e.key === 'Escape') {
+    showSuggestions.value = false
+  }
+}
+
+// 点击候选项
+function onSuggestionClick(id: string) {
+  selectGameId(id)
+}
+
+// 鼠标进入高亮
+function onSuggestionHover(index: number) {
+  highlightedIndex.value = index
+}
+
+// 失焦延迟关闭(防止点不到)
+function onGameIdBlur() {
+  setTimeout(() => {
+    showSuggestions.value = false
+  }, 200)
+}
+
+// 监听 gameId 变化:输入时自动开,清空时关
+// 修复:点候选后手动设 showSuggestions = false,清空再输入没 watch 就开不回去
+watch(gameId, (newVal) => {
+  showSuggestions.value = newVal.trim() !== ''
 })
 
 const handleAvatarError = (event: Event) => {
@@ -212,14 +280,45 @@ const isValid = computed(() => {
       </div>
       <div class="form-group">
         <label>游戏ID <span class="required">*</span></label>
-        <input 
-          v-model="gameId" 
-          type="text" 
-          placeholder="输入游戏ID，用于匹配头像"
+        <input
+          v-model="gameId"
+          type="text"
+          placeholder="输入游戏ID，用于匹配头像（输入首字母实时补全）"
           class="form-input"
+          autocomplete="off"
+          @focus="showSuggestions = true"
+          @blur="onGameIdBlur"
+          @keydown="onGameIdKeydown"
         />
-        <p v-if="showAvatarPreview" class="avatar-preview">
-          头像预览：<img :src="avatarPath" alt="头像预览" @error="handleAvatarError" />
+        <!-- 候选面板(实时补全) -->
+        <div v-if="showSuggestions && gameId.trim()" class="avatar-suggestions">
+          <div v-if="suggestions.length === 0" class="avatar-empty">
+            无结果
+          </div>
+          <div v-else class="avatar-grid">
+            <div
+              v-for="(item, i) in visibleSuggestions"
+              :key="item.gameId"
+              class="avatar-item"
+              :class="{ highlighted: i === highlightedIndex, matched: item.gameId === gameId.trim() }"
+              @mousedown.prevent
+              @click="onSuggestionClick(item.gameId)"
+              @mouseenter="onSuggestionHover(i)"
+            >
+              <img
+                :src="item.avatar"
+                :alt="item.gameId"
+                draggable="false"
+                @error="handleAvatarError"
+              />
+              <span class="avatar-gameid">{{ item.gameId }}</span>
+            </div>
+            <div v-if="hasMore" class="avatar-more">...</div>
+          </div>
+        </div>
+        <!-- 已选中预览(完全匹配时显示) -->
+        <p v-if="hasMatch" class="avatar-preview">
+          头像预览：<img :src="`/mcoo/${gameId.trim()}.png`" :alt="gameId" @error="handleAvatarError" />
         </p>
       </div>
       <div class="form-group">
@@ -458,7 +557,7 @@ const isValid = computed(() => {
   margin-top: 8px;
   font-size: 0.9rem;
   color: var(--vp-c-text-2);
-  
+
   img {
     width: 48px;
     height: 48px;
@@ -466,6 +565,88 @@ const isValid = computed(() => {
     vertical-align: middle;
     margin-left: 8px;
     object-fit: cover;
+  }
+}
+
+/* 游戏 ID 实时补全面板 */
+.avatar-suggestions {
+  margin-top: 8px;
+  padding: 12px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+}
+
+.avatar-empty {
+  color: var(--vp-c-text-3);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 10px;
+}
+
+.avatar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+  border: 1px solid transparent;
+
+  &:hover,
+  &.highlighted {
+    background: var(--vp-c-brand-soft);
+    border-color: var(--vp-c-brand);
+  }
+
+  &.matched {
+    border-color: var(--vp-c-brand);
+    background: var(--vp-c-brand-soft);
+  }
+
+  img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    // 防图片触发 Chrome 的图片查看器 / native 行为
+    pointer-events: none;
+    -webkit-user-drag: none;
+  }
+}
+
+.avatar-gameid {
+  font-size: 0.7rem;
+  color: var(--vp-c-text-2);
+  text-align: center;
+  word-break: break-all;
+  line-height: 1.2;
+}
+
+.avatar-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--vp-c-text-3);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 0 4px;
+  user-select: none;
+}
+
+@media (max-width: 640px) {
+  .avatar-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
