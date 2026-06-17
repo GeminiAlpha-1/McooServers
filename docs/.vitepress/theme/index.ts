@@ -159,10 +159,22 @@ function setupImageViewerEasterEgg() {
     const img = getViewerImg()
     if (!img) return
 
-    // 飞走动画:translateY(-150vh) + 多转 15000°,保持高速旋转感
-    // 800ms 内转 15000° = 18750°/s,比 10s 末的 14000°/s 还快 30%,不会"减速感"
-    img.style.transition = `transform ${FLY_AWAY_ANIMATION}ms linear`
-    img.style.transform = `translateY(-150vh) rotate(${eggState.totalRotation + 15000}deg)`
+    // 取消 CSS transition(避免减速诡异行为),用 Web Animations API 直接控制
+    img.style.transition = 'none'
+    const startRotation = eggState.totalRotation
+    const endRotation = startRotation + 15000 // 多转 15000° = 18750°/s,比彩蛋末速还快
+
+    const animation = img.animate(
+      [
+        { transform: `rotate(${startRotation}deg)`, offset: 0 },
+        { transform: `translateY(-150vh) rotate(${endRotation}deg)`, offset: 1 },
+      ],
+      {
+        duration: FLY_AWAY_ANIMATION,
+        easing: 'linear',
+        fill: 'forwards',
+      },
+    )
 
     // 飞走后渐显提示
     setTimeout(() => {
@@ -174,6 +186,7 @@ function setupImageViewerEasterEgg() {
 
       // 3s 后关闭 viewer
       setTimeout(() => {
+        animation.cancel()
         tip.remove()
         const closeBtn = document.querySelector('.tk-image-viewer__close') as HTMLElement | null
         if (closeBtn) closeBtn.click()
