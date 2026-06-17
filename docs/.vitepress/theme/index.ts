@@ -49,5 +49,43 @@ export default {
     app.component('SubmissionForm', SubmissionForm);
     app.component('PhotoGallery', PhotoGallery);
     app.component('MRDSGrid', MRDSGrid);
+
+    // 全站屏蔽右键菜单(放过可交互元素: input/textarea/a/button/contenteditable)
+    // 效果:
+    //   - 文字段落 / 装饰 / 图片右键不出菜单(防误触)
+    //   - 输入框可以粘贴/拼写检查
+    //   - 链接/按钮右键可以"在新窗口打开"
+    // 拖拽图片到新 tab 也屏蔽(纯图片,不影响其他)
+    // 绕过可能:disable JS、查看源代码、PrintScreen —— 真正防护靠 CDN Referer 白名单
+    if (typeof document !== 'undefined') {
+      const blockEvents = () => {
+        document.addEventListener(
+          'contextmenu',
+          (e) => {
+            const target = e.target as HTMLElement | null;
+            if (target?.matches('input, textarea, [contenteditable], a, button')) return;
+            e.preventDefault();
+            return false;
+          },
+          true,
+        );
+        document.addEventListener(
+          'dragstart',
+          (e) => {
+            const target = e.target as HTMLElement | null;
+            if (target?.tagName === 'IMG') {
+              e.preventDefault();
+              return false;
+            }
+          },
+          true,
+        );
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', blockEvents, { once: true });
+      } else {
+        blockEvents();
+      }
+    }
   },
 };
