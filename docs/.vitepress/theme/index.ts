@@ -159,9 +159,10 @@ function setupImageViewerEasterEgg() {
     const img = getViewerImg()
     if (!img) return
 
-    // 飞走动画:translateY(-150vh) + 多转 4 圈,linear 保持匀速不减速
+    // 飞走动画:translateY(-150vh) + 多转 15000°,保持高速旋转感
+    // 800ms 内转 15000° = 18750°/s,比 10s 末的 14000°/s 还快 30%,不会"减速感"
     img.style.transition = `transform ${FLY_AWAY_ANIMATION}ms linear`
-    img.style.transform = `translateY(-150vh) rotate(${eggState.totalRotation + 1440}deg)`
+    img.style.transform = `translateY(-150vh) rotate(${eggState.totalRotation + 15000}deg)`
 
     // 飞走后渐显提示
     setTimeout(() => {
