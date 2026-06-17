@@ -9,6 +9,7 @@ import AuthorCard from "./components/AuthorCard.vue";
 import DownloadCard from "./components/DownloadCard.vue";
 import SubmissionForm from "./components/SubmissionForm.vue";
 import PhotoGallery from "./components/PhotoGallery.vue";
+import MRDSGrid from "./components/MRDSGrid.vue";
 
 import "vitepress-theme-teek/index.css";
 import "vitepress-theme-teek/theme-chalk/tk-code-block-mobile.css";
@@ -30,6 +31,7 @@ import "./styles/custom-banner.scss";
 import "./styles/blur.css";
 import "./styles/mermaid.scss";
 import "./styles/img-card-16x9.scss";
+import "./styles/scrollbar-stable.scss";
 import "./style/link.css";
 import "./style/marker.css";
 
@@ -46,5 +48,6 @@ export default {
     app.component('DownloadCard', DownloadCard);
     app.component('SubmissionForm', SubmissionForm);
     app.component('PhotoGallery', PhotoGallery);
+    app.component('MRDSGrid', MRDSGrid);
   },
 };

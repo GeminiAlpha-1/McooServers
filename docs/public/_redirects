@@ -1,0 +1,8 @@
+# McooServers Cloudflare Pages redirects
+#
+# SPA fallback for VitePress permalinks
+# VitePress SSG 生成的 dist 文件路径是源 .md 路径(如 004.Mcoo Resource Download Site/...)
+# 而 permalink(frontmatter 注入)是 /mcdr/<cat>/<id> 或 /mrds 等"虚拟 URL"
+# Cloudflare Pages 默认找不到 permalink 路径会 404
+# 这一行把所有未匹配路径重写到 index.html,SPA 接管渲染
+/*    /index.html   200

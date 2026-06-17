@@ -1,6 +1,7 @@
 import { defineConfig } from "vitepress";
 import llmstxt from "vitepress-plugin-llms";
 import { teekConfig } from "./teekConfig";
+import { mrdsDataLoader } from "./theme/plugins/mrds-data-loader";
 
 const description = [
   "欢迎来到 Mcoo 墨客小筑 官方网站",
@@ -116,6 +117,7 @@ export default defineConfig({
   vite: {
     plugins: [
       llmstxt() as any,
+      mrdsDataLoader(),
     ],
   },
 });
