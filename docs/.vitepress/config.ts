@@ -76,22 +76,17 @@ export default defineConfig({
     },
     nav: [
       { text: "首页", link: "/" },
-      { text: "资源", link: "/mrds" },
-      { text: "相册", link: "/photo" },
       {
         text: "其他",
         items: [
           { text: "归档", link: "/archives" },
           { text: "团队", link: "/team" },
-          { text: "投稿", link: "/submission" },
-          { text: "图床", link: "https://imghub.mcoo.top/" },
-          { text: "云图", link: "https://image.rseg.club/" }
+          { text: "图床", link: "https://imghub.mcoo.top/" }
         ]
       },
       {
         text: "友链",
         items: [
-          { text: "MineTale 日志站", link: "https://minetale.top" },
           { text: "MC百科 找服玩", link: "https://play.mcmod.cn/sv20188666.html" },
           { text: "莫 の 窝", link: "https://blog.mostu.cn" },
           { text: "戈戈 の 窝", link: "https://clawblog.rseg.club/" },
