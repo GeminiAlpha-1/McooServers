@@ -5,7 +5,7 @@ import { mrdsDataLoader } from "./theme/plugins/mrds-data-loader";
 
 const description = [
   "欢迎来到 Mcoo 墨客小筑 官方网站",
-  "Mcoo服务器基于 Fabric 1.21 的原版生存玩法运行，仅使用不改变原版机制的优化模组，保证纯净体验",
+  "Mcoo服务器基于 Fabric 26.2 运行，仅使用不改变原版机制的优化模组，保证纯净体验",
   "采用正版验证 + 白名单防熊，日常管理克制，不干扰正常游戏，整体氛围轻松友好，是一台偏长期游玩的原版「甜品服」",
 ].toString();
 
@@ -76,12 +76,15 @@ export default defineConfig({
     },
     nav: [
       { text: "首页", link: "/" },
+      { text: "资源", link: "/mrds" },
       {
         text: "其他",
         items: [
           { text: "归档", link: "/archives" },
           { text: "团队", link: "/team" },
-          { text: "图床", link: "https://imghub.mcoo.top/" }
+          { text: "相册", link: "/photo" },
+          { text: "图床[慢&较稳定]", link: "https://imghub.mcoo.top/" },
+          { text: "图床[快&不稳定]", link: "https://image.rseg.club/" }
         ]
       },
       {

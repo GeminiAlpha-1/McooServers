@@ -52,7 +52,15 @@ features:
   link: https://oopz.cn/i/Bh6ewS
   bgColor: '#DFEEE7'
   textColor: '#2A3344'
+
+- name: 官方账号
+  desc: 这是我们的B站官号，可以关注一下~
+  link: https://space.bilibili.com/3690988828625493
+  bgColor: '#fae2ad'
+  textColor: '#2A3344'
 ```
+
+
 :::
 
 <script setup lang="ts">
@@ -108,4 +116,7 @@ onMounted(() => {
     --vp-home-hero-image-filter: blur(68px);
   }
 }
+
+/* 首页 shareCard 卡片里不显示 link.css 的链接图标 (其他页面全可,只压 .share-card 里) */
+.share-card a[href*="bilibili.com"]::before { display: none !important; }
 </style>
